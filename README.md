@@ -41,7 +41,7 @@ The Python version required is 3.6 or newer.
 
 ### Clone this project
 ```shell
-$ git clone git@github.com:Daanielvb/cin-starcraft-ai.git
+$ git clone git@github.com:eduardomatos66/in1100_multiagentes.git
 ```
 
 ### Create VirtualEnv 

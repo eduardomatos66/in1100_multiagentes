@@ -1,34 +1,32 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""
+Gather bot unit
+"""
 from sc2.ids.ability_id import AbilityId
 from sc2.ids.unit_typeid import UnitTypeId
 
-from core.bot.generic.generic_bot_manager import GenericBotManager
+from core.bot.generic.generic_bot_unit import GenericBotUnit
 
 
-def get_workers_free_slots(unit):
-    return unit.ideal_harvesters - unit.assigned_harvesters
-
-
-def scv_can_gather(scv):
-    orders = scv.orders
-    return len(orders) < 1 or orders[0].ability.id in [AbilityId.HARVEST_GATHER, AbilityId.HARVEST_RETURN]
-
-
-class Gather(GenericBotManager):
-    """  A Gather bot class """
+class Gather(GenericBotUnit):
+    """  A Gather bot unit class """
 
     should_train_scv = False
 
-    def __init__(self, bot_player):
+    def __init__(self, bot_player, bot_manager, request, unit_tags):
         """
-        :param core.bot.generic_bot_player.GenericBotPlayer bot_player:
+        :param core.bot.generic.generic_bot_player.GenericBotPlayer bot_player:
+        :param core.bot.generic.generic_bot_manager.GenericBotManager bot_manager:
+        :param core.register_board.request.Request request:
+        :param list[int] unit_tags:
         """
-        super(Gather, self).__init__(bot_player)
+        super(Gather, self).__init__(bot_player, bot_manager, request, unit_tags)
         self._info = None
 
     async def default_behavior(self, iteration):
-        """ The default behavior of the bot
+        """
+        The default behavior of the bot
         :param int iteration: Game loop iteration
         """
         # Do 60 in 60 iteration checks
@@ -42,9 +40,6 @@ class Gather(GenericBotManager):
         """
         if self.should_train_scv:
             await self.train_scv()
-
-    async def toggle_train_scv(self, should_train):
-        self.should_train_scv = should_train
 
     async def gather_resources(self):
         """
@@ -68,8 +63,8 @@ class Gather(GenericBotManager):
             deficit = ideal - actual
 
             for x in range(0, deficit):
-                if self.find_available_scvs_units(is_idle=False):
-                    w = self.find_available_scvs_units(is_idle=False)[0]
+                if self.bot_manager.find_available_scvs_units(is_idle=False):
+                    w = self.bot_manager.find_available_scvs_units(is_idle=False)[0]
                     if len(w.orders) == 1 and w.orders[0].ability.id in [AbilityId.HARVEST_RETURN]:
                         await self.bot_player.do(w.move(g))
                         await self.bot_player.do(w.return_resource(queue=True))
@@ -80,13 +75,23 @@ class Gather(GenericBotManager):
         """
         Hanle idle workers by putting them back to gathering
         """
-        for idle_worker in self.find_available_scvs_units()[:4]:
+        for idle_worker in self.bot_manager.find_available_scvs_units()[:4]:
             if self.bot_player.state.mineral_field:
                 mf = self.bot_player.state.mineral_field.closest_to(idle_worker)
                 if mf:
                     await self.bot_player.do(idle_worker.gather(mf))
 
+    async def toggle_train_scv(self, should_train):
+        """
+        Toggle train SCV
+        :param boolean should_train:
+        """
+        self.should_train_scv = should_train
+
     async def train_scv(self):
+        """
+        Train SCV
+        """
         num_workers = len(self.bot_player.workers)
         num_idle_workers = len(self.bot_player.workers.idle)
         command_centers = self.bot_player.units(UnitTypeId.COMMANDCENTER).ready
@@ -98,6 +103,8 @@ class Gather(GenericBotManager):
                 for ref in refs:
                     refinery_slots += ref.ideal_harvesters - ref.assigned_harvesters
 
-                if num_workers == 0 or cmd_cen.assigned_harvesters < (cmd_cen.ideal_harvesters + refinery_slots - num_idle_workers):
-                    #precisa treinar um SCV
+                if num_workers == 0 \
+                        or cmd_cen.assigned_harvesters < (cmd_cen.ideal_harvesters + refinery_slots - num_idle_workers):
+
+                    # Need to train SCV
                     await self.bot_player.do(cmd_cen.train(UnitTypeId.SCV))

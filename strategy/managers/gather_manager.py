@@ -16,7 +16,7 @@ class GatherBotManager(GenericBotManager):
         :param core.bot.generic_bot_player.GenericBotPlayer bot_player:
         """
         super(GatherBotManager, self).__init__(bot_player)
-        self.gather_class = Gather(bot_player)
+        self.gather_unit = Gather(bot_player, self, None, [])
 
     def find_request(self):
         """ Implements the logic to find the requests that should be handled by the bot
@@ -29,6 +29,7 @@ class GatherBotManager(GenericBotManager):
         """ Logic to update the requests status """
         for request in self.processed_requests:
             self.bot_player.board_request.remove(request)
+
         self.processed_requests.clear()
 
     async def requests_handler(self, iteration):
@@ -43,11 +44,11 @@ class GatherBotManager(GenericBotManager):
         await self.update_gather(iteration)
 
     async def toggle_train_scv(self, should_train):
-        await self.gather_class.toggle_train_scv(should_train)
+        await self.gather_unit.toggle_train_scv(should_train)
 
     async def update_gather(self, iteration):
         """
         :param int iteration: Game loop iteration
         """
         if iteration > 0:
-            await self.gather_class.default_behavior(iteration)
+            await self.gather_unit.default_behavior(iteration)

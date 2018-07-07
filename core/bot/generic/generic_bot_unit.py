@@ -7,14 +7,16 @@ from core.bot.generic.generic_bot import GenericBot
 class GenericBotUnit(GenericBot):
     """ Generic bot non-player unit class, which represents a sc2.unit.Unit on the game """
 
-    def __init__(self, bot_player, request, unit_tags):
+    def __init__(self, bot_player, bot_manager, request, unit_tags):
         """
-        :param core.bot.generic_bot_player.GenericBotPlayer bot_player:
+        :param core.bot.generic.generic_bot_player.GenericBotPlayer bot_player:
+        :param core.bot.generic.generic_bot_manager.GenericBotManager bot_manager:
         :param core.register_board.request.Request request:
-        :param list(int) unit_tags:
+        :param list[int] unit_tags:
         """
         super(GenericBotUnit, self).__init__(bot_player)
         self._bot_player = bot_player
+        self._bot_manager = bot_manager
         self._unit_tags = unit_tags
         self._request = request
 
@@ -24,6 +26,13 @@ class GenericBotUnit(GenericBot):
         :return core.bot.generic_bot_player.GenericBotPlayer:
         """
         return self._bot_player
+
+    @property
+    def bot_manager(self):
+        """
+        :return core.bot.generic.generic_bot_manager.GenericBotManager:
+        """
+        return self._bot_manager
 
     @property
     def request(self):

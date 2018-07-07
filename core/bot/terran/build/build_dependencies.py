@@ -7,7 +7,7 @@ BUILD = 'BUILD'
 TECHNOLOGY = 'TECHNOLOGY'
 SUPPLY = 'SUPPLY'
 
-DEPENDENCIES = {
+build_dependencies_dict = {
     # ==================================== UNITIES ====================================
     UnitTypeId.SCV: {
         BUILD: [UnitTypeId.COMMANDCENTER],

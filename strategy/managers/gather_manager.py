@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from core.bot.generic_bot_non_player import GenericBotNonPlayer
+from core.bot.generic.generic_bot_manager import GenericBotManager
 from core.bot.terran.worker.gather import Gather
-from core.register_board.constants import OperationTypeId, RequestStatus
-from strategy.cin_deem_team.terran.build_dependencies import *
+from core.communication.constants.operation_type_id import OperationTypeId
 
 
-class GatherManager(GenericBotNonPlayer):
+class GatherBotManager(GenericBotManager):
     """ Build manager class """
 
     processed_requests = []
@@ -16,7 +15,7 @@ class GatherManager(GenericBotNonPlayer):
         """
         :param core.bot.generic_bot_player.GenericBotPlayer bot_player:
         """
-        super(GatherManager, self).__init__(bot_player)
+        super(GatherBotManager, self).__init__(bot_player)
         self.gather_class = Gather(bot_player)
 
     def find_request(self):
@@ -38,20 +37,17 @@ class GatherManager(GenericBotNonPlayer):
                 await self.toggle_train_scv(True)
             else:
                 await self.toggle_train_scv(False)
-            self.processed_requests = self.processed_requests + [request]
+
+            # self.processed_requests = self.processed_requests + [request]
 
         await self.update_gather(iteration)
 
     async def toggle_train_scv(self, should_train):
-        #gather_bot = self.bots.get(Gather.__name__)
-
         await self.gather_class.toggle_train_scv(should_train)
 
     async def update_gather(self, iteration):
         """
         :param int iteration: Game loop iteration
         """
-       # gather_bot = self.bots.get(Gather.__name__)
-
         if iteration > 0:
             await self.gather_class.default_behavior(iteration)

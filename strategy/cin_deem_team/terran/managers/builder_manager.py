@@ -6,15 +6,17 @@ from sc2.unit import UnitTypeId
 from sc2.ids.ability_id import AbilityId
 from s2clientprotocol import common_pb2
 
-from core.register_board.request import Request
-from core.bot.generic_bot_non_player import GenericBotNonPlayer
+from core.communication.item.request import Request
+from core.bot.generic.generic_bot_manager import GenericBotManager
 from core.bot.terran.build.build import Build, is_addon
-from core.register_board.constants import OperationTypeId, RequestStatus, RequestPriority
+from core.communication.constants.operation_type_id import OperationTypeId
+from core.communication.constants.request_status import RequestStatus
+from core.communication.constants.request_priority import RequestPriority
 
 from core.bot.util import get_mean_location
 
 
-class BuildManager(GenericBotNonPlayer):
+class BuildBotManager(GenericBotManager):
     """ Build manager class """
 
     current_iteration = 0
@@ -25,7 +27,7 @@ class BuildManager(GenericBotNonPlayer):
         """
         :param core.bot.generic_bot_player.GenericBotPlayer bot_player:
         """
-        super(BuildManager, self).__init__(bot_player)
+        super(BuildBotManager, self).__init__(bot_player)
         self._build_unit = None
         self._started_build_process = False
 
@@ -90,7 +92,7 @@ class BuildManager(GenericBotNonPlayer):
             if command_centers:
                 self.true_start_location = command_centers[0].position
 
-        if self._build_unit and self.bot_player.get_current_scv_unit(self._build_unit.unit_tags[0]):
+        if self._build_unit and self.bot_player.get_current_worker_unit(self._build_unit.unit_tags[0]):
             request = self._build_unit.info.request
 
             request_is_addon = is_addon(request.unit_type_id)
@@ -105,7 +107,7 @@ class BuildManager(GenericBotNonPlayer):
                 else:
                     unit = None
             else:
-                unit = self.bot_player.get_current_scv_unit(self._build_unit.unit_tags[0])
+                unit = self.bot_player.get_current_worker_unit(self._build_unit.unit_tags[0])
 
             if unit:
                 orders = unit.orders

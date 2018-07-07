@@ -4,15 +4,15 @@ from sc2.ids.unit_typeid import UnitTypeId
 from sc2.ids.ability_id import AbilityId
 
 from core.bot import util
-from core.bot.generic_bot_non_player import GenericBotNonPlayer
+from core.bot.generic.generic_bot_manager import GenericBotManager
 from core.bot.terran.military.defense import DefenseBot
-from core.register_board.constants import OperationTypeId, RequestStatus, InfoType, RequestPriority
-from core.register_board.request import Request
+from core.communication.constants.operation_type_id import OperationTypeId
+from core.communication.constants.request_status import RequestStatus
+from core.communication.constants.request_priority import RequestPriority
+from core.communication.item.request import Request
 
-import numpy as np
-from sc2.position import Point2
 
-class DefenseManager(GenericBotNonPlayer):
+class DefenseBotManager(GenericBotManager):
     """ Defense manager class """
 
     can_train = True
@@ -21,7 +21,7 @@ class DefenseManager(GenericBotNonPlayer):
         """
         :param core.bot.generic_bot_player.GenericBotPlayer bot_player:
         """
-        super(DefenseManager, self).__init__(bot_player)
+        super(DefenseBotManager, self).__init__(bot_player)
         self._defense_units = None
         self._relevant_info = None
 
@@ -47,14 +47,14 @@ class DefenseManager(GenericBotNonPlayer):
         """ Implements the logic to find the requests that should be handled by the bot
         :return list[core.register_board.request.Request]
         """
-        self._relevant_info = self.find_info()
+        # self._relevant_info = self.find_info()
         army_requests = self.bot_player.board_request.search_request_by_operation_ids(
             [OperationTypeId.TRAIN_MARINE_ALLOW, OperationTypeId.TRAIN_MARINE_DENY,
              OperationTypeId.ARMY, OperationTypeId.DEFEND, OperationTypeId.ATTACK])
         return army_requests
 
-    def find_info(self):
-        return self.bot_player.board_info.search_request_by_type(InfoType.ENEMY_NEARBY)
+    # def find_info(self):
+    #     return self.bot_player.board_info.search_request_by_type(InfoType.ENEMY_NEARBY)
 
     async def requests_handler(self, iteration):
         """ Logic to go through the bot requests

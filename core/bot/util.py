@@ -4,13 +4,23 @@ from sc2.position import Point2
 from sc2.position import Point3
 
 
-# calculates the distance between two coordinates
 def distance(unit_a, unit_b):
+    """
+    Calculates the distance between two coordinates
+    :param unit_a:
+    :param unit_b:
+    :return:
+    """
     return unit_a.position.to2.distance_to(unit_b.position.to2)
 
 
-# verify if determined unit is not contained a group of units
 def contains_unit(unit, unit_group):
+    """
+    Verify if determined unit is not contained a group of units
+    :param unit:
+    :param unit_group:
+    :return:
+    """
     for u in unit_group:
         if unit.tag == u.tag:
             return True
@@ -25,8 +35,6 @@ def get_units_tags(units):
     return result
 
 
-
-# get the mean location between two coordinates
 def get_mean_location(pos1, pos2):
     """
     Get mean location between 2 points
@@ -53,6 +61,12 @@ def get_mean_location(pos1, pos2):
 
 
 def add_to_location(pos, value):
+    """
+    Increment location.
+    :param sc2.position.Point2 pos:
+    :param int value:
+    :return sc2.position.Point2:
+    """
     x = pos.x + value
     y = pos.y + value
     return Point2((x,y))

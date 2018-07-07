@@ -4,14 +4,14 @@ from random import randint
 
 from sc2.ids.unit_typeid import UnitTypeId
 
-from core.bot.generic_bot_non_player_unit import GenericBotNonPlayerUnit
+from core.bot.generic.generic_bot_unit import GenericBotUnit
 from core.bot import util
-from core.register_board.constants import InfoType, RequestPriority, OperationTypeId
-from core.register_board.info import Info
-from core.register_board.request import RequestStatus, Request
+from core.communication.constants.request_priority import RequestPriority
+from core.communication.constants.operation_type_id import OperationTypeId
+from core.communication.item.request import RequestStatus, Request
 
 
-class Scout(GenericBotNonPlayerUnit):
+class Scout(GenericBotUnit):
     """  A Scout bot unit class """
 
     def __init__(self, bot_player, iteration, request, unit_tags):
@@ -45,7 +45,7 @@ class Scout(GenericBotNonPlayerUnit):
 
     async def move_scout_to(self, position):
         self.log("Moving Scout")
-        unit = self.bot_player.get_current_scv_unit(self._info.unit_tags[0])
+        unit = self.bot_player.get_current_worker_unit(self._info.unit_tags[0])
         if unit:
             await self.bot_player.do(unit.move(position))
         else:
@@ -72,7 +72,7 @@ class Scout(GenericBotNonPlayerUnit):
     def set_enemy_position(self):
         self.log("Found enemy base")
         self.enemy_start_position = self.bot_player.known_enemy_structures[0].position
-        self.bot_player.board_info.register(Info(bot=self, value=self.enemy_start_position, type=InfoType.ENEMY_POSITION))
+        # self.bot_player.board_info.register(Info(bot=self, value=self.enemy_start_position, type=InfoType.ENEMY_POSITION))
 
     async def visit_enemy(self):
         await self.move_scout_to(self.bot_player.enemy_start_locations[self.enemy_location_counter])
@@ -99,9 +99,9 @@ class Scout(GenericBotNonPlayerUnit):
             self.bot_player.start_location, self.bot_player.enemy_start_locations[0]
         ), randint(-9, 9)))
 
-    def register_enemy_units(self, enemy_units):
-        self.bot_player.board_info.register(
-            Info(bot=self, value=len(enemy_units), type=InfoType.ENEMY_NEARBY, location=enemy_units[0].position))
+    # def register_enemy_units(self, enemy_units):
+        # self.bot_player.board_info.register(
+        #     Info(bot=self, value=len(enemy_units), type=InfoType.ENEMY_NEARBY, location=enemy_units[0].position))
 
     def is_enemy_structure_nearby(self):
         if self.bot_player.known_enemy_structures:

@@ -1,20 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from core.bot.generic_bot_non_player import GenericBotNonPlayer
+from core.bot.generic.generic_bot_manager import GenericBotManager
 from core.bot.terran.scout.scout import Scout
-from core.register_board.constants import OperationTypeId
-from core.register_board.request import RequestStatus
+from core.communication.constants.operation_type_id import OperationTypeId
+from core.communication.item.request import RequestStatus
 
 
-class ScoutManager(GenericBotNonPlayer):
+class ScoutBotManager(GenericBotManager):
     """ Scout manager class """
 
     def __init__(self, bot_player):
         """
         :param core.bot.generic_bot_player.GenericBotPlayer bot_player:
         """
-        super(ScoutManager, self).__init__(bot_player)
+        super(ScoutBotManager, self).__init__(bot_player)
         self._scout_unit = None
 
     def find_request(self):

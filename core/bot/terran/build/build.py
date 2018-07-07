@@ -6,11 +6,11 @@ from sc2.ids.ability_id import AbilityId
 from sc2.ids.unit_typeid import UnitTypeId
 from sc2.position import Point2
 
-from core.register_board.constants import RequestStatus
-from core.bot.generic_bot_non_player_unit import GenericBotNonPlayerUnit
-from core.register_board.constants import RequestPriority, OperationTypeId
-from core.register_board.request import Request
-from strategy.cin_deem_team.terran.build_dependencies import DEPENDENCIES, BUILD, TECHNOLOGY, SUPPLY
+from core.communication.constants.request_status import RequestStatus
+from core.bot.generic.generic_bot_unit import GenericBotUnit
+from core.communication.constants.operation_type_id import OperationTypeId
+from core.communication.item.request import Request
+from core.bot.terran.build.build_dependencies import BUILD, TECHNOLOGY, SUPPLY, build_dependencies_dict
 
 
 def is_addon(unit_type):
@@ -18,7 +18,7 @@ def is_addon(unit_type):
                          UnitTypeId.FACTORYREACTOR, UnitTypeId.STARPORTTECHLAB, UnitTypeId.STARPORTREACTOR]
 
 
-class Build(GenericBotNonPlayerUnit):
+class Build(GenericBotUnit):
     """  A Scout bot class """
 
     def __init__(self, bot_player, iteration, request, unit_tags):
@@ -174,7 +174,7 @@ class Build(GenericBotNonPlayerUnit):
             scv = self.get_worker(location)
             self.info.unit_tag = scv.tag
         else:
-            scv = self.bot_player.get_current_scv_unit(self._info.unit_tags[0])
+            scv = self.bot_player.get_current_worker_unit(self._info.unit_tags[0])
 
             if not scv and location:
                 scv = self.get_worker(location)
@@ -195,7 +195,7 @@ class Build(GenericBotNonPlayerUnit):
         :return bool:
         """
         requested_unit = request.unit_type_id
-        request_dependencies = DEPENDENCIES.get(requested_unit)
+        request_dependencies = build_dependencies.get(requested_unit)
 
         can_build = self.bot_player.can_afford(requested_unit)
         can_build = can_build.can_afford_minerals and can_build.can_afford_vespene

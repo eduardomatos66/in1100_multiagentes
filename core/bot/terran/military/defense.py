@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from core.bot import util
-from core.bot.generic_bot_non_player_unit import GenericBotNonPlayerUnit
-from core.register_board.constants import RequestStatus, InfoType
+from core.bot.generic.generic_bot_unit import GenericBotUnit
+from core.communication.constants.request_status import RequestStatus
 
 
-class DefenseBot(GenericBotNonPlayerUnit):
+class DefenseBot(GenericBotUnit):
     """  A defense units bot class """
 
     attack_mode = False

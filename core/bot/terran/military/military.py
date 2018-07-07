@@ -1,13 +1,9 @@
 # coding=utf-8
-from core.bot.terran.generic_terran_bot import GenericTerranBot
-from core.bot.util import distance
-
-from sc2.position import Point2
-from sc2.ids.ability_id import AbilityId
+from core.bot.generic.generic_bot_unit import GenericBotUnit
 from sc2.ids.unit_typeid import UnitTypeId
 
 
-class Military(GenericTerranBot):
+class Military(GenericBotUnit):
 
     async def on_step(self, iteration):
         pass

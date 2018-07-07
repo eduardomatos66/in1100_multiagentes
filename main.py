@@ -3,20 +3,23 @@
 
 """ Entry point """
 
-from sc2 import Race, Difficulty
-from sc2 import player
+from sc2 import Race
+from sc2 import Difficulty
 from sc2 import run_game
 from sc2 import maps as sc2_maps
 from sc2.player import Computer
+from sc2.player import Human
 
 from config import maps
-from strategy.cin_deem_team.terran.human_god import HumanGod
+from strategy.cin_deem_team.terran.my_bot_player import MyBotPlayer
 
 
 if __name__ == '__main__':
     players = [
-        HumanGod().build_bot_player(),
-        player.Computer(Race.Zerg, Difficulty.VeryEasy)
+        MyBotPlayer().build_bot_player(),
+        MyBotPlayer().build_bot_player()
+        # Human(Race.Terran)
+        # Computer(Race.Zerg, Difficulty.VeryEasy)
     ]
 
     run_game(

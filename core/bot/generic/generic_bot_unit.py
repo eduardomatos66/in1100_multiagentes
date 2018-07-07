@@ -1,31 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from core.bot.generic_bot import GenericBot
-from core.register_board.info import Info
+from core.bot.generic.generic_bot import GenericBot
 
 
-class GenericBotNonPlayerUnit(GenericBot):
+class GenericBotUnit(GenericBot):
     """ Generic bot non-player unit class, which represents a sc2.unit.Unit on the game """
 
-    def __init__(self, bot_player, iteration, request, unit_tags):
+    def __init__(self, bot_player, request, unit_tags):
         """
         :param core.bot.generic_bot_player.GenericBotPlayer bot_player:
-        :param int iteration:
         :param core.register_board.request.Request request:
         :param list(int) unit_tags:
         """
-        super(GenericBotNonPlayerUnit, self).__init__(bot_player)
+        super(GenericBotUnit, self).__init__(bot_player)
         self._bot_player = bot_player
         self._unit_tags = unit_tags
-        self._info = Info(
-            iteration=iteration,
-            bot=self,
-            request=request,
-            unit_tags=self._unit_tags
-        )
-
-        self.bot_player.board_info.register(self._info)
+        self._request = request
 
     @property
     def bot_player(self):
@@ -35,24 +26,17 @@ class GenericBotNonPlayerUnit(GenericBot):
         return self._bot_player
 
     @property
-    def info(self):
-        """
-        :return core.register_board.info.Info:
-        """
-        return self._info
-
-    @property
     def request(self):
         """
         :return core.register_board.request.Request:
         """
-        return self._info.request
+        return self._request
 
     def set_request(self, request):
         """
         :param core.register_board.request.Request request:
         """
-        self._info.request = request
+        self._request = request
 
     @property
     def unit_tags(self):
@@ -65,7 +49,7 @@ class GenericBotNonPlayerUnit(GenericBot):
         """
         :return bool:
         """
-        unit = self.bot_player.get_current_scv_unit(self._info.unit_tags)
+        unit = self.bot_player.get_current_worker_unit(self._request.unit_tags)
         if unit:
             return unit.is_idle
         else:
@@ -76,7 +60,7 @@ class GenericBotNonPlayerUnit(GenericBot):
         :return bool:
         """
         result = True
-        units = self.bot_player.get_current_units(self._info.unit_tags)
+        units = self.bot_player.get_current_units(self._request.unit_tags)
         if units:
             for unit in units:
                 if not unit.is_idle:

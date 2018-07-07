@@ -3,17 +3,18 @@
 
 from sc2.ids.unit_typeid import UnitTypeId
 
-from core.bot.generic_bot import GenericBot
+from core.bot.generic.generic_bot import GenericBot
+from core.communication.constants.request_status import RequestStatus
 
 
-class GenericBotNonPlayer(GenericBot):
+class GenericBotManager(GenericBot):
     """ Generic bot non-player class, which cannot observer and operate the environment """
 
     def __init__(self, bot_player):
         """
         :param core.bot.generic_bot_player.GenericBotPlayer bot_player:
         """
-        super(GenericBotNonPlayer, self).__init__(bot_player.race_type)
+        super(GenericBotManager, self).__init__(bot_player.race_type)
         self._bot_player = bot_player
         self._requests = list()
 
@@ -60,32 +61,33 @@ class GenericBotNonPlayer(GenericBot):
         """
         self._requests = self.find_request()
 
-    def get_scvs_unit_from_bord_info(self):
+    def _get_scvs_unit_from_request_bord(self):
         """
         :return list[sc2.unit.Unit]:
         """
         scvs = []
 
-        for info in self.bot_player.board_info.board:
-            scv = self.bot_player.get_current_scv_unit(info.unit_tags)
-
+        for request in self.bot_player.board_request.get_requests_by_status(RequestStatus.DONE):
+            scv = self.bot_player.get_current_units(request.unit_tags)
             if scv and scv.type_id == UnitTypeId.SCV:
                 scvs.append(scv)
         return scvs
 
-    def find_available_scvs_units(self):
+    def find_available_scvs_units(self, is_idle=True):
         """ Look for SCVs unit on board info that is not performing any request
+        @param boolean is_idle:
         :return list[sc2.unit.Unit]:
         """
-        available_scvs = None
-        all_scvs = self.bot_player.workers[:]
-
-        if not self.bot_player.board_info.board:
-            available_scvs = all_scvs
-
+        if is_idle:
+            all_scvs = self.bot_player.workers.idle[:]
         else:
-            scvs_from_board_info = self.get_scvs_unit_from_bord_info()
-            available_scvs = list(set(all_scvs) - set(scvs_from_board_info))
+            all_scvs = self.bot_player.workers[:]
+
+        if not self.bot_player.board_request.board:
+            available_scvs = all_scvs
+        else:
+            scvs_from_request_board = self._get_scvs_unit_from_request_bord()
+            available_scvs = list(set(all_scvs) - set(scvs_from_request_board))
 
         return available_scvs
 

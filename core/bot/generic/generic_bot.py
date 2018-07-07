@@ -3,7 +3,7 @@
 
 from sc2 import bot_ai
 
-from utils import logger
+from core.logger import LOGGER
 
 
 class GenericBot(bot_ai.BotAI):
@@ -25,7 +25,7 @@ class GenericBot(bot_ai.BotAI):
         """ Prints log message
         :param msg: the message to be printed
         """
-        logger.LOGGER(
+        LOGGER(
             '{class_name}:{msg}'.format(class_name=self, msg=msg)
         )
 

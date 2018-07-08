@@ -11,7 +11,7 @@ from sc2.player import Computer
 from sc2.player import Human
 
 from config import maps
-from strategy.cin_deem_team.terran.my_bot_player import MyBotPlayer
+from strategy.terran.my_bot_player import MyBotPlayer
 
 
 if __name__ == '__main__':

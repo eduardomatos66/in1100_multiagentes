@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from sc2.ids.unit_typeid import UnitTypeId
-from core.bot.dependencies_constants import BUILD, TECHNOLOGY, SUPPLY
+from core.bot.terran.race_dependencies.dependencies_constants import BUILD, TECHNOLOGY, SUPPLY
 
 training_dependencies_dict = {
     UnitTypeId.SCV: {

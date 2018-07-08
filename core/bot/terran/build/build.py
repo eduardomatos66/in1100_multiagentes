@@ -8,9 +8,6 @@ from sc2.position import Point2
 
 from core.communication.constants.request_status import RequestStatus
 from core.bot.generic.generic_bot_unit import GenericBotUnit
-from core.communication.constants.operation_type_id import OperationTypeId
-from core.communication.item.request import Request
-from core.bot.terran.build.build_dependencies import BUILD, TECHNOLOGY, SUPPLY, building_dependencies_dict
 
 
 def is_addon(unit_type):

@@ -2,14 +2,15 @@
 # -*- coding: utf-8 -*-
 from sc2.ids.unit_typeid import UnitTypeId
 
-from core.bot.dependencies_constants import BUILD, TECHNOLOGY, SUPPLY
+from core.bot.terran.race_dependencies.dependencies_constants import BUILD, TECHNOLOGY, SUPPLY
 from core.bot.generic.generic_bot_unit import GenericBotUnit
-from core.bot.terran.build.build_dependencies import building_dependencies_dict
-from core.bot.training_dependencies import training_dependencies_dict
+from core.bot.terran.race_dependencies.building_dependencies import building_dependencies_dict
+from core.bot.terran.race_dependencies.training_dependencies import training_dependencies_dict
 from core.communication.constants.operation_type_id import OperationTypeId
 from core.communication.item.request import Request
-from strategy.cin_deem_team.terran.managers.builder_manager import BuildBotManager
-from strategy.managers.trainer_manager import TrainerBotManager
+
+BUILD = 'build'
+TRAIN = 'train'
 
 
 class GenericBotUnitCreator(GenericBotUnit):
@@ -31,9 +32,9 @@ class GenericBotUnitCreator(GenericBotUnit):
         :return dict:
         """
         result = None
-        if isinstance(self.bot_manager, TrainerBotManager):
+        if TRAIN in str.lower(self._bot_manager.__class__.__name__):
             result = training_dependencies_dict
-        elif isinstance(self.bot_manager, BuildBotManager):
+        elif BUILD in str.lower(self._bot_manager.__class__.__name__):
             result = building_dependencies_dict
         return result
 

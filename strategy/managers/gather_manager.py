@@ -33,6 +33,10 @@ class GatherBotManager(GenericBotManager):
         self.processed_requests.clear()
 
     async def requests_handler(self, iteration):
+        """
+        Logic to go through the bot requests
+        :param int iteration: Game loop iteration
+        """
         for request in self.requests:
             pass
         else:

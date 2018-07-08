@@ -2,11 +2,10 @@
 # -*- coding: utf-8 -*-
 
 from core.bot.generic.generic_bot_manager import GenericBotManager
-from core.bot.gather import Gather
 from core.communication.constants.operation_type_id import OperationTypeId
 
 
-class GatherBotManager(GenericBotManager):
+class TrainerBotManager(GenericBotManager):
     """ Build manager class """
 
     processed_requests = []
@@ -15,15 +14,15 @@ class GatherBotManager(GenericBotManager):
         """
         :param core.bot.generic_bot_player.GenericBotPlayer bot_player:
         """
-        super(GatherBotManager, self).__init__(bot_player)
-        self.gather_unit = Gather(bot_player, self, None, [])
+        super(TrainerBotManager, self).__init__(bot_player)
+        self.gather_unit = Trainer(bot_player, self, None, [])
 
     def find_request(self):
         """ Implements the logic to find the requests that should be handled by the bot
         :return list[core.register_board.request.Request]
         """
-        return self.bot_player.board_request.search_request_by_operation_ids([OperationTypeId.GATHER_MINERALS,
-                                                                              OperationTypeId.GATHER_VESPENE])
+        return self.bot_player.board_request.search_request_by_operation_ids([OperationTypeId.TRAIN_SCV_ALLOW,
+                                                                              OperationTypeId.TRAIN_SCV_DENY])
 
     def requests_status_update(self):
         """ Logic to update the requests status """
@@ -34,9 +33,17 @@ class GatherBotManager(GenericBotManager):
 
     async def requests_handler(self, iteration):
         for request in self.requests:
-            pass
-        else:
-            await self.update_gather(iteration)
+            if request.operation_type_id == OperationTypeId.TRAIN_SCV_ALLOW:
+                await self.toggle_train_scv(True)
+            else:
+                await self.toggle_train_scv(False)
+
+            # self.processed_requests = self.processed_requests + [request]
+
+        await self.update_gather(iteration)
+
+    async def toggle_train_scv(self, should_train):
+        await self.gather_unit.toggle_train_scv(should_train)
 
     async def update_gather(self, iteration):
         """

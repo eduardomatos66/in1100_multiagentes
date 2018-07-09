@@ -5,10 +5,10 @@ Gather bot unit
 """
 from sc2.ids.unit_typeid import UnitTypeId
 
-from core.bot.generic.generic_bot_unit_creator import GenericBotUnitCreator
+from core.bot.generic.generic_bot_unit import GenericBotUnit
 
 
-class Trainer(GenericBotUnitCreator):
+class Trainer(GenericBotUnit):
     """  A Gather bot unit class """
 
     should_train_scv = False
@@ -21,39 +21,27 @@ class Trainer(GenericBotUnitCreator):
         :param list[int] unit_tags:
         """
         super(Trainer, self).__init__(bot_player, bot_manager, request, unit_tags)
-        self._train_scv_allowed = True
-        self._goal_max_trainer = []
-
-    def set_default_max_trainer(self, goal_max_trainer):
-        """
-        Get default max trainer
-        """
-        self._goal_max_trainer = goal_max_trainer
 
     async def default_behavior(self, iteration):
         """
         The default behavior of the bot
         :param int iteration: Game loop iteration
         """
-        # Do 60 in 60 iteration checks
-        for unit_id, max_value in self._goal_max_trainer:
-            pass
-        # if not iteration % 40:
-        #     await self.check_need_scv_training()
+        pass # Trainer has no default behavior
 
-    async def check_need_scv_training(self):
+    async def train_unit(self, unit_trainer, unit_id, max_value):
         """
-        Check need of train SCVs
+        Train unit.
+        :param unit_trainer:
+        :param unit_id:
+        :param max_value:
         """
-        if self.should_train_scv:
-            await self.train_scv()
+        if max_value > 5:
+            max_value = 5
 
-    async def toggle_train_scv(self, should_train):
-        """
-        Toggle train SCV
-        :param boolean should_train:
-        """
-        self.should_train_scv = should_train
+        for i in range(max_value):
+            if self.bot_player.can_afford(unit_id):
+                await self.bot_player.do(unit_trainer.train(unit_id))
 
     async def train_scv(self):
         """

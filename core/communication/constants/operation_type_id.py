@@ -24,8 +24,8 @@ class OperationTypeId(Enum):
 
     SCOUT = 'SCOUT'
 
-    TRAIN_SCV_ALLOW = 'ALLOW SCV'
-    TRAIN_SCV_DENY = 'DENY SCV'
+    TRAIN_BASIC_UNIT_ALLOW = 'ALLOW SCV'
+    TRAIN_BASIC_UNIT_DENY = 'DENY SCV'
     TRAIN = "TRAIN"
 
     WARN = 'WARN'
